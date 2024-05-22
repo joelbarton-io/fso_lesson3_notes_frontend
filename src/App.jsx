@@ -14,6 +14,47 @@ const App = () => {
     ? notes
     : notes.filter(({ important }) => important);
 
+  const removeNote = async (id) => {
+    try {
+      console.log("trying to delete a note with id: ", id);
+      const response = await db.remove(id);
+      console.log("response", response);
+      setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
+    //   console.log("current notes: ", notes);
+    } catch (error) {
+      console.log(`something broke: ${error.message}`);
+    }
+  };
+
+  const toggleImportant = async (note) => {
+    console.log("toggled importantness of note: ", note.id);
+    try {
+      const updatedNote = await db.update(note.id, {
+        ...note,
+        important: !note.important,
+      });
+
+      // this wasn't on the object any more so must preserve it
+
+      setNotes((prevNotes) =>
+        prevNotes.map((n) => (n.id != note.id ? n : updatedNote))
+      );
+      console.log(notes);
+      //   console.log(notes);
+    } catch (e) {
+      //   alert(`the note '${note.content}' was already deleted from server`);
+      setErrorMessage(
+        `Note '${note.content}' was already removed from the server`
+      );
+
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+
+      setNotes(notes.filter((n) => n.id !== note.id));
+      //   console.log(notes);
+    }
+  };
   const addNote = (e) => {
     e.preventDefault();
 
@@ -30,32 +71,6 @@ const App = () => {
 
   const handleNoteChange = (e) => {
     setNewNote(e.target.value);
-  };
-
-  const toggleImportant = async (note) => {
-    try {
-      const updatedNote = await db.update(note.id, {
-        ...note,
-        important: !note.important,
-      });
-
-      setNotes((prevNotes) =>
-        prevNotes.map((n) => (n.id != note.id ? n : updatedNote))
-      );
-      console.log(notes);
-    } catch (e) {
-      //   alert(`the note '${note.content}' was already deleted from server`);
-      setErrorMessage(
-        `Note '${note.content}' was already removed from the server`
-      );
-
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-
-      setNotes(notes.filter((n) => n.id !== note.id));
-      console.log(notes);
-    }
   };
 
   useEffect(() => {
@@ -81,7 +96,11 @@ const App = () => {
         <button onClick={() => setShowAll(!showAll)}>
           {showAll ? "Show important" : "Show all"}
         </button>
-        <List notesToShow={notesToShow} toggleImportant={toggleImportant} />
+        <List
+          notesToShow={notesToShow}
+          toggleImportant={toggleImportant}
+          removeNote={removeNote}
+        />
         <form onSubmit={addNote}>
           <input value={newNote} type="text" onChange={handleNoteChange} />
           <button type="submit">Submit</button>

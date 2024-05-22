@@ -11,6 +11,13 @@ const create = async (newNote) => {
   return data;
 };
 
+const remove = async (id) => {
+  console.log("attempting to invoke axios.delete from frontend");
+  const response = await axios.delete(`${baseURL}/${id}`);
+  return response;
+};
+
+// this isn't implemented
 const update = async (id, updatedNote) => {
   const { data } = await axios.put(`${baseURL}/${id}`, updatedNote);
   return data;
@@ -20,4 +27,5 @@ export default {
   getAll,
   create,
   update,
+  remove,
 };
