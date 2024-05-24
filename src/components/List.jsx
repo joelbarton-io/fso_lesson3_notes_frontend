@@ -2,7 +2,6 @@
 import Note from "./Note";
 
 export default function List({ notesToShow, toggleImportant, removeNote }) {
-//   notesToShow.forEach((note) => console.log(note.id));
   return (
     <ul>
       {notesToShow.map((note) => (

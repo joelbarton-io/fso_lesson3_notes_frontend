@@ -16,11 +16,8 @@ const App = () => {
 
   const removeNote = async (id) => {
     try {
-      console.log("trying to delete a note with id: ", id);
-      const response = await db.remove(id);
-      console.log("response", response);
+      await db.remove(id);
       setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
-    //   console.log("current notes: ", notes);
     } catch (error) {
       console.log(`something broke: ${error.message}`);
     }
@@ -55,7 +52,7 @@ const App = () => {
       //   console.log(notes);
     }
   };
-  const addNote = (e) => {
+  const addNote = async (e) => {
     e.preventDefault();
 
     const note = {
@@ -63,10 +60,10 @@ const App = () => {
       important: Math.random() > 0.5,
     };
 
-    db.create(note).then((newNote) => {
-      setNotes((prevNotes) => prevNotes.concat(newNote));
-      setNewNote("");
-    });
+    const createdNote = await db.create(note);
+    console.log("from AddNote: ", createdNote);
+    setNotes((prevNotes) => prevNotes.concat(createdNote));
+    setNewNote("");
   };
 
   const handleNoteChange = (e) => {
@@ -79,7 +76,6 @@ const App = () => {
         const initialNotes = await db.getAll();
         setNotes(initialNotes);
       } catch (error) {
-        console.log("oops");
         console.error(error.message);
       }
     }

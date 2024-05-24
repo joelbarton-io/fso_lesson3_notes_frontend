@@ -12,9 +12,8 @@ const create = async (newNote) => {
 };
 
 const remove = async (id) => {
-  console.log("attempting to invoke axios.delete from frontend");
-  const response = await axios.delete(`${baseURL}/${id}`);
-  return response;
+  const { data } = await axios.delete(`${baseURL}/${id}`);
+  return data;
 };
 
 // this isn't implemented
