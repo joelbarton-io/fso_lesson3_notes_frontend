@@ -52,18 +52,25 @@ const App = () => {
       //   console.log(notes);
     }
   };
+
   const addNote = async (e) => {
     e.preventDefault();
 
-    const note = {
-      content: newNote,
-      important: Math.random() > 0.5,
-    };
+    console.log("called addNote...");
+    try {
+      const note = {
+        content: newNote,
+        important: Math.random() > 0.5,
+      };
 
-    const createdNote = await db.create(note);
-    console.log("from AddNote: ", createdNote);
-    setNotes((prevNotes) => prevNotes.concat(createdNote));
-    setNewNote("");
+      console.log("note: ", note);
+      const createdNote = await db.create(note);
+      console.log("from AddNote: ", createdNote);
+      setNotes((prevNotes) => prevNotes.concat(createdNote));
+      setNewNote("");
+    } catch (e) {
+      console.log(e.message, e.status, e);
+    }
   };
 
   const handleNoteChange = (e) => {

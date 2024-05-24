@@ -7,6 +7,7 @@ const getAll = async () => {
 };
 
 const create = async (newNote) => {
+  console.log("from create in notes.js ->", newNote);
   const { data } = await axios.post(baseURL, newNote);
   return data;
 };
